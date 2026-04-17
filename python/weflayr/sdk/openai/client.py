@@ -101,6 +101,8 @@ from openai.types.audio import TranslationVerbose as _TranslationVerbose  # type
 from openai.resources.responses.responses import AsyncResponses as _AsyncResponses
 from openai.resources.responses.responses import Responses as _Responses
 
+_PROVIDER = "openai"
+
 from weflayr.sdk.helpers import (
     CLIENT_ID,
     CLIENT_SECRET,
@@ -382,7 +384,7 @@ class Completions(_Completions):
             :class:`_TrackedSyncStream` when ``stream=True``.
         """
         tags = kwargs.pop("tags", {})
-        before = {"model": kwargs.get("model"), "message_count": len(kwargs.get("messages", [])), "tags": tags}
+        before = {"provider": _PROVIDER, "model": kwargs.get("model"), "message_count": len(kwargs.get("messages", [])), "tags": tags}
 
         if not kwargs.get("stream"):
             return track_sync(
@@ -467,7 +469,7 @@ class AsyncCompletions(_AsyncCompletions):
             :class:`_TrackedAsyncStream` when ``stream=True``.
         """
         tags = kwargs.pop("tags", {})
-        before = {"model": kwargs.get("model"), "message_count": len(kwargs.get("messages", [])), "tags": tags}
+        before = {"provider": _PROVIDER, "model": kwargs.get("model"), "message_count": len(kwargs.get("messages", [])), "tags": tags}
 
         if not kwargs.get("stream"):
             return await track_async(
@@ -558,7 +560,7 @@ class TextCompletions(_TextCompletions):
         return track_sync(
             url=self._intake_url,
             call="completions.create",
-            before={"model": kwargs.get("model"), "prompt_length": prompt_length, "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "prompt_length": prompt_length, "tags": tags},
             fn=lambda: super(TextCompletions, self).create(**kwargs),
             after_extra=_text_completion_usage,
             client_id=self._client_id,
@@ -607,7 +609,7 @@ class AsyncTextCompletions(_AsyncTextCompletions):
         return await track_async(
             url=self._intake_url,
             call="completions.create_async",
-            before={"model": kwargs.get("model"), "prompt_length": prompt_length, "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "prompt_length": prompt_length, "tags": tags},
             fn=lambda: super(AsyncTextCompletions, self).create(**kwargs),
             after_extra=_text_completion_usage,
             client_id=self._client_id,
@@ -663,7 +665,7 @@ class Embeddings(_Embeddings):
         return track_sync(
             url=self._intake_url,
             call="embeddings.create",
-            before={"model": kwargs.get("model"), "input_count": input_count, "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "input_count": input_count, "tags": tags},
             fn=lambda: super(Embeddings, self).create(**kwargs),
             after_extra=_embedding_usage,
             client_id=self._client_id,
@@ -712,7 +714,7 @@ class AsyncEmbeddings(_AsyncEmbeddings):
         return await track_async(
             url=self._intake_url,
             call="embeddings.create_async",
-            before={"model": kwargs.get("model"), "input_count": input_count, "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "input_count": input_count, "tags": tags},
             fn=lambda: super(AsyncEmbeddings, self).create(**kwargs),
             after_extra=_embedding_usage,
             client_id=self._client_id,
@@ -770,7 +772,7 @@ class Responses(_Responses):
         return track_sync(
             url=self._intake_url,
             call="responses.create",
-            before={"model": kwargs.get("model"), "input_count": input_count, "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "input_count": input_count, "tags": tags},
             fn=lambda: super(Responses, self).create(**kwargs),
             after_extra=_response_usage,
             client_id=self._client_id,
@@ -819,7 +821,7 @@ class AsyncResponses(_AsyncResponses):
         return await track_async(
             url=self._intake_url,
             call="responses.create_async",
-            before={"model": kwargs.get("model"), "input_count": input_count, "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "input_count": input_count, "tags": tags},
             fn=lambda: super(AsyncResponses, self).create(**kwargs),
             after_extra=_response_usage,
             client_id=self._client_id,
@@ -891,7 +893,7 @@ class Speech(_Speech):
         return track_sync(
             url=self._intake_url,
             call="audio.speech.create",
-            before={"model": kwargs.get("model"), "voice": kwargs.get("voice"), "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "voice": kwargs.get("voice"), "tags": tags},
             fn=lambda: super(Speech, self).create(**kwargs),
             after_extra=_tts_usage,
             input_text=kwargs.get("input"),
@@ -940,7 +942,7 @@ class AsyncSpeech(_AsyncSpeech):
         return await track_async(
             url=self._intake_url,
             call="audio.speech.create_async",
-            before={"model": kwargs.get("model"), "voice": kwargs.get("voice"), "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "voice": kwargs.get("voice"), "tags": tags},
             fn=lambda: super(AsyncSpeech, self).create(**kwargs),
             after_extra=_tts_usage,
             input_text=kwargs.get("input"),
@@ -1041,7 +1043,7 @@ class Transcriptions(_Transcriptions):
         return track_sync(
             url=self._intake_url,
             call="audio.transcriptions.create",
-            before={"model": kwargs.get("model"), "language": kwargs.get("language"), "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "language": kwargs.get("language"), "tags": tags},
             fn=lambda: super(Transcriptions, self).create(**kwargs),
             after_extra=_stt_usage,
             client_id=self._client_id,
@@ -1089,7 +1091,7 @@ class AsyncTranscriptions(_AsyncTranscriptions):
         return await track_async(
             url=self._intake_url,
             call="audio.transcriptions.create_async",
-            before={"model": kwargs.get("model"), "language": kwargs.get("language"), "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "language": kwargs.get("language"), "tags": tags},
             fn=lambda: super(AsyncTranscriptions, self).create(**kwargs),
             after_extra=_stt_usage,
             client_id=self._client_id,
@@ -1194,7 +1196,7 @@ class Translations(_Translations):
         return track_sync(
             url=self._intake_url,
             call="audio.translations.create",
-            before={"model": kwargs.get("model"), "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "tags": tags},
             fn=lambda: super(Translations, self).create(**kwargs),
             after_extra=_translation_verbose_usage,
             response_transform=lambda r: _convert_translation_response(r, original_format),
@@ -1251,7 +1253,7 @@ class AsyncTranslations(_AsyncTranslations):
         return await track_async(
             url=self._intake_url,
             call="audio.translations.create_async",
-            before={"model": kwargs.get("model"), "tags": tags},
+            before={"provider": _PROVIDER, "model": kwargs.get("model"), "tags": tags},
             fn=lambda: super(AsyncTranslations, self).create(**kwargs),
             after_extra=_translation_verbose_usage,
             response_transform=lambda r: _convert_translation_response(r, original_format),
